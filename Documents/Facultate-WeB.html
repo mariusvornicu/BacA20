@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<title>Scholarly HTML</title>
+<link rel="stylesheet" href="scholarly-html-gh-pages/css/scholarly.min.css">
+<script src="scholarly-html-gh-pages/js/scholarly.min.js"></script>
+</head>
+<body prefix="schema: http://schema.org">
+<header>
+  <div class="banner"> <img src="scholarly-html-gh-pages/scholarly-html.svg" width="227" height="50" alt="Scholarly HTML logo">
+    <div class="status">Community Draft</div>
+  </div>
+  <h1>Scholarly HTML</h1>
+</header>
+<!--
+      XXX
+      - check refs
+      - the math example has too much maths
+      - bring back some of the old style
+      - make semantics, validation, processing sub-sections of each structural element
+      - have a section before that for general constructs
+        - explain why use RDFa
+        - explain our patterns: RDFa, roles
+      - figure captions need to get set throughout
+      - dedication? see doc-dedication
+      - syntactic constraints (prefix)
+      - needs more sthenurines
+      - examples of everything
+      - some notes on using Semantic CSS
+      - needs more RDFa in the spec itself
+    -->
+
+<section typeof="sa:Abstract" id="abstract" role="doc-abstract">
+  <h2>Abstract</h2>
+  <p>We are 3 students from Software Development master: Alex, Robert and Marius and we are trying to make an app that will help museum lovers to find all the information they need, in order to create an unforgettable experience. We thought of naming it MuseFind.</p>
+</section>
+<section id="introduction" role="doc-introduction"> 
+  <!-- review? -->
+  <h2>Introduction</h2>
+  <p>We proposed an app where people can easily find information about museums from Romania. It is called &ldquo;MuseFind&rdquo;. Also, we want to include a live gallery, so visitors can surf through our webpage and discover the paintings, sculptures and other secrets the museums hold. <br>
+    We came up with this idea because we believe it is an interesting way to share knowledge and it could attract more people to visit Romania.</p>
+</section>
+<section id="structure"> 
+  <!-- review? -->
+  <h2>Structure</h2>
+  <p>The structure of our website will have a homepage, a page about us and a page for each museum. We will also have a feature where the visitors of our website could add a museum to favorites.</p>
+  <section id="validate"> 
+    <!-- review? -->
+    <h3>Sites and webpages</h3>
+    <p>We developed our solution using HTML and CSS.</p>
+    <p>The <b>Home Page</b> is split into 3 main sections:
+    <ul>
+      <li>The navigation bar.</li>
+      <li>The Title section with the FAQ button.</li>
+      <li>The list of the museums area.</li>
+    </ul>
+    <img style="width: 795px; height: 400px;" src="HomePage.png">
+    </p>
+    <p>Each of the images of the museums in the list is a hyperlink towards the Museum's official website.<br>
+      There, the user can find more specific details about the museum and its exhibition, content and other things that he/she may be interested in. </p>
+    <p></p>
+    <p>The <b>Frequently Asked Questions</b> button has the purpose of redirecting the user to a Help page, in order to help the user understand the purpose of the application and how to properly use it. </p>
+    <img style="width: 795px; height: 400px;" src="FAQPage.png">
+    <p>&nbsp;</p>
+  </section>
+</section>
+<section id="hypermedia"> 
+  <!-- review? -->
+  <h2>Hypermedia Controls</h2>
+  <h3>1. MetaQRcode API</h3>
+  <p>We will use an QR code in order for our visitors to have a much easier way to acces our website. We will also use a QR code for each item displayed in the museums. For this we will use a MetaQRcode API.</p>
+  <p>The METAQRCODE API provides developers a way to create their own XML metadata and put it inside a QRCode. This API is Rest based, and can be consumed using JSON or XML. Using MetaQRcode you can upload your XML document and associate it to a QRcode.</p>
+  <p><br>
+    An XML document into MetaQRcode is called Repository Entry. In MetaQRcode the repository is the container of all repository entries, so the repository is  the container of all XML documents. Each XML document inside MetaQRcode has to be associated with at least one XSD.</p>
+  <p><br>
+    In MetaQRcode an XSD is called Catalog Entry. The Catalog is the container of all XSD.When you upload an XML you have to specify one or more XSD. The XML  have to comply with the given XSD. MetaQRcode will check compliance during upload phase. When you upload an XML you can specify one XSD using API (outside  the XML) or you can specify one or more XSD inside the XML document.</p>
+  <p><br>
+    MetaQRcode expose REST json and REST xml API. Some API needs authentication to proceed. To authenticate to MetaQRcode you can use two methods:
+  <ul>
+    <li>Login API</li>
+    <li>OpenIDconnect</li>
+  </ul>
+  In every scenario you (developer) need to register yourself and the app you are developing on MetaQRcode openidconnect server.<br>
+  Go to <a href="https://www.metaqrcode.com/oidc">https://www.MetaQRcode.com/oidc</a> to register yourself and your app. After client (app) registration you will obtain a client_id to use in login API.
+  </p>
+  <p><br>
+    Each XML you want to upload on MetaQRcode has to comply with a given XSD (catalog entry).You can use an existing XSD or upload your own. Every XSD are shared between all users. It's important to verify if the XSD you need it's already present in catalog before upload a new one.</p>
+  <p><br>
+    It's important to reduce number of similar XSD inside MetaQRcode server. This is the reason for which in XSD you can use import, inclusion, extensions and all standard XSD feature. To use that features, you always have to refer to an existing schema by using it's MetaQRcode URL.</p>
+  <p><br>
+    Once uploaded previous catalog entry (XSD) you can upload a new repository entry (XML) using that catalog entry (XSD).<br>
+    You have two ways to have your repository entry (XML) referring to a catalog entry (XSD):<br>
+  <ol>
+    <li>specify a default catalog entry in requestRepositoryUpload API</li>
+    <li>refer explicitly to given catalog entries (XSDs) from inside the repository entry (XML)</li>
+  </ol>
+  In first case you can ONLY specify ONE catalog entry. Your entire XML must comply with that XSD.<br>
+  In the second case your XML can refer many catalog entries (XSD).<br>
+  When you uploaded the catalog entry (XSD), metarcode will return the catalog  url: the URL of the uploaded XSD. You have to use this URL inside our XML. To  upload this repository entry into MetaQRcode you have 2 ways :
+  </p>
+  <h4>1. Using MetaQRcode Website</h4>
+  <ul type="disc">
+    <li>login to MetaQRcode</li>
+    <li>search in MetaQRcode catalog for personData.xsd (previously uploaded XSD) and copy the catalog URL (you can also find it at <a href="https://www.metaqrcode.com/api/c/2">https://www.MetaQRcode.com/api/c/2</a>)</li>
+    <li>go to uplaod xml</li>
+    <li>DO NOT specify the default catalog URL</li>
+    <li>insert previous XML in the textarea (verify and correct xsi:schemaLocation       attribute)</li>
+    <li>press upload xml</li>
+    <li>you will see the QRcode of the uploaded xml</li>
+    <li>you can use (by ie download) the generated QRcode</li>
+  </ul>
+  <h4>2. Consume MetaQRcode REST API</h4>
+  <ul type="disc">
+    <li>login to MetaQRcode</li>
+    <li>search in MetaQRcode catalog for personData.xsd and copy the catalog URL (you can also find it at <a href="https://www.metaqrcode.com/api/c/2">https://www.MetaQRcode.com/api/c/2</a>)</li>
+  </ul>
+  <p>After repository entry (XML) upload you can get the QRCODE corresponding to  your xml using data.QRcodeGet (as shown previously).<br>
+    QRCODE is generated as image in PNG format. Size of generated QRcode is  210px x 210px because we suppose that you will print it in minimum 300dpi  resolution. If you print with this resolution you will have a QRcode of 0,7x0,7  inch (18x18 mm). You can resize the PNG received depending on quality of your  print. If you print using a 600dpi resolution, you can print your QRcode using  half dimensions (0,35x0,35 inch -&gt; 9x9 mm).<br>
+    These are only theoretical calculations, in the real world you have to do  some experiment to check best result in your scenario.To verify result of your  MetaQRcode print you can use many app. The first you can use is the zxing  mobile app : <a href="https://play.google.com/store/apps/details?id=com.google.zxing.client.android">https://play.google.com/store/apps/details?id=com.google.zxing.client.android</a>.  Zxing is an opensource project (<a href="https://github.com/zxing">https://github.com/zxing</a>, <a href="https://zxingnet.codeplex.com/">https://zxingnet.codeplex.com/</a>)  available in many technologies (java, .net, etc.).</p>
+  <p>&nbsp;</p>
+  <h3>2. Museum Bot </h3>
+  <p><br>
+    For the use of natural user interactions we could use a conversational user interface provided by Azure Bot Services.<br>
+    Azure Bot Service and Bot Framework provide tools to build, test, deploy, and manage intelligent bots all in one place. Through the use of modular and  extensible framework provided by the SDK, tools, templates, and AI services developers can create bots that use speech, understand natural language, handle  questions and answers, and more.</p>
+  <h4>What is a bot?</h4>
+  <p>Bots provide an experience that feels less like using a computer and more like dealing with a person - or at least an intelligent robot. They can be used  to shift simple, repetitive tasks, such as taking a dinner reservation or gathering profile information, on to automated systems that may no longer require direct human intervention. Users converse with a bot using text, interactive cards, and speech. A bot interaction can be a quick question and answer, or it can be a sophisticated conversation that intelligently provides access to services.<br>
+    Bots are a lot like modern web applications, living on the internet and use  APIs to send and receive messages. What's in a bot varies widely depending on  what kind of bot it is. Modern bot software relies on a stack of technology and  tools to deliver increasingly complex experiences on a wide variety of  platforms. However, a simple bot could just receive a message and echo it back  to the user with very little code involved.<br>
+    Bots can do the same things other types of software can do - read and write  files, use databases and APIs, and do the regular computational tasks. What makes  bots unique is their use of mechanisms generally reserved for human-to-human  communication.<br>
+    Azure Bot Service and Bot Framework offer:</p>
+  <ul type="disc">
+    <li>Bot Framework SDK for developing bots</li>
+    <li>Bot Framework Tools to cover end-to-end bot development workflow</li>
+    <li>Bot Framework Service (BFS) to send and receive messages and events between bots and channels</li>
+    <li>Bot deployment and channel configuration in Azure</li>
+  </ul>
+  <p>Additionally, bots may use other Azure services, such as:</p>
+  <ul type="disc">
+    <li>Azure Cognitive Services to build intelligent applications</li>
+    <li>Azure Storage for cloud storage solution</li>
+  </ul>
+  <h4>Building a bot</h4>
+  <p>Azure Bot Service and Bot Framework offer an integrated set of tools and  services to facilitate this process. Choose your favorite development  environment or command line tools to create your bot. SDKs exist for C#,  JavaScript, and Typescript. (SDKs for Java and Python are under development.)  We provide tools for various stages of bot development to help you design and  build bots.<br>
+    <img width="624" height="113" src="Facultate WeB_clip_image002.png" alt="Bot Overview"></p>
+  <h3>Plan</h3>
+  <p>As with any type of software, having a thorough understanding of the goals,  processes and user needs is important to the process of creating a successful  bot. Before writing code, review the bot <a href="https://docs.microsoft.com/en-us/azure/bot-service/bot-service-design-principles?view=azure-bot-service-4.0">design guidelines</a> for  best practices and identify the needs for your bot. You can create a simple bot  or include more sophisticated capabilities such as speech, natural language  understanding,and question answering.</p>
+  <h3>Build</h3>
+  <p>Your bot is a web service that implements a conversational interface and  communicates with the Bot Framework Service to send and receive messages and  events. Bot Framework Service is one of the components of the Azure Bot Service  and Bot Framework. You can create bots in any number of environments and  languages. You can start your bot development in the <a href="https://docs.microsoft.com/en-us/azure/bot-service/bot-service-quickstart?view=azure-bot-service-4.0">Azure  portal</a>, or use [<a href="https://docs.microsoft.com/en-us/azure/bot-service/dotnet/bot-builder-dotnet-sdk-quickstart?view=azure-bot-service-4.0">C#</a> | <a href="https://docs.microsoft.com/en-us/azure/bot-service/javascript/bot-builder-javascript-quickstart?view=azure-bot-service-4.0">JavaScript</a>]  templates for local development.<br>
+    As part of the Azure Bot Service and Bot Framework, we offer additional  components you can use to extend your bot's functionality</p>
+  <table border="0" cellspacing="3" cellpadding="0">
+    <tr>
+      <td><br>
+        <strong>Feature</strong></td>
+      <td><p align="center"><strong>Description</strong></p></td>
+      <td><p align="center"><strong>Link</strong></p></td>
+    </tr>
+    <tr>
+      <td><p>Add natural language processing</p></td>
+      <td><p>Enable your bot to understand natural language, understand spelling errors, use speech, and recognize the user's intent</p></td>
+      <td><p>How to use <a href="https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-v4-luis?view=azure-bot-service-4.0">LUIS</a></p></td>
+    </tr>
+    <tr>
+      <td><p>Answer questions</p></td>
+      <td><p>Add a knowledge base to answer questions users ask in amore natural, conversational way</p></td>
+      <td><p>How to use <a href="https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-qna?view=azure-bot-service-4.0">QnA Maker</a></p></td>
+    </tr>
+    <tr>
+      <td><p>Manage multiple models</p></td>
+      <td><p>If using more than one model, such as for LUIS and QnA Maker, intelligently determine when to use which one during your bot's conversation</p></td>
+      <td><p><a href="https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-tutorial-dispatch?view=azure-bot-service-4.0">Dispatch</a> tool</p></td>
+    </tr>
+    <tr>
+      <td><p>Add cards and buttons</p></td>
+      <td><p>Enhance the user experience with media other than text, such as graphics, menus, and cards</p></td>
+      <td><p>How to <a href="https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-add-media-attachments?view=azure-bot-service-4.0">add    cards</a></p></td>
+    </tr>
+  </table>
+  <p>Note<br>
+    The table above is not a comprehensive list. Explore the articles on the left, starting with <a href="https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-send-messages?view=azure-bot-service-4.0">sending  messages</a>, for more bot functionality.<br>
+    Additionally, we provide command line tools to help you to create, manage,  and test bot assets. These tools can configure LUIS apps, build a QnA knowledge  base, build models to dispatch between components, mock a conversation, and  more. You can find more details in the command line tools <a href="https://aka.ms/botbuilder-tools-readme">readme</a>.<br>
+    You also have access to a variety of <a href="https://github.com/microsoft/botbuilder-samples">samples</a> that showcase many of the capabilities available through the SDK. These are great  for developers looking for a more feature rich starting point.</p>
+  <h3>Test</h3>
+  <p>Bots are complex apps, with a lot of different parts working together. Like  any other complex app, this can lead to some interesting bugs or cause your bot  to behave differently than expected. Before publishing, test your bot. We  provide several ways to test bots before they are released for use:</p>
+  <ul>
+    <li>Test your bot locally with the <a href="https://docs.microsoft.com/en-us/azure/bot-service/bot-service-debug-emulator?view=azure-bot-service-4.0">emulator</a>.  The Bot Framework Emulator is a stand-alone app that not only provides a chat  interface, but also debugging and interrogation tools to help understand how  and why your bot does what it does. The emulator can be run locally alongside  your in-development bot application.</li>
+    <li>Test your bot on the <a href="https://docs.microsoft.com/en-us/azure/bot-service/bot-service-manage-test-webchat?view=azure-bot-service-4.0">web</a>.  Once configured through the Azure portal your bot can also be reached through a  web chat interface. The web chat interface is a great way to grant access to  your bot to testers and other people who do not have direct access to the bot's  running code.</li>
+    <li><a href="https://docs.microsoft.com/en-us/azure/bot-service/unit-test-bots?view=azure-bot-service-4.0">Unit  Test</a> your bot with the July update of Bot Framework SDK.</li>
+  </ul>
+  <h3>Publish</h3>
+  <p>When you are ready for your bot to be available on the web, publish your bot  to <a href="https://docs.microsoft.com/en-us/azure/bot-service/bot-builder-howto-deploy-azure?view=azure-bot-service-4.0">Azure</a> or to your own web service or data center. Having an address on the public  internet is the first step to your bot coming to life on your site, or inside  chat channels.</p>
+  <h3>Connect</h3>
+  <p>Connect your bot to channels such as Facebook, Messenger, Kik, Skype, Slack,  Microsoft Teams, Telegram, text/SMS, Twilio, Cortana, and Skype. Bot Framework  does most of the work necessary to send and receive messages from all of these  different platforms - your bot application receives a unified, normalized  stream of messages regardless of the number and type of channels it is  connected to. For information on adding channels, see <a href="https://docs.microsoft.com/en-us/azure/bot-service/bot-service-manage-channels?view=azure-bot-service-4.0">channels</a> topic.</p>
+  <h3>Evaluate</h3>
+  <p>Use the data collected in Azure portal to identify opportunities to improve  the capabilities and performance of your bot. You can get service-level and  instrumentation data like traffic, latency, and integrations. Analytics also  provides conversation-level reporting on user, message, and channel data. For  more information, see <a href="https://docs.microsoft.com/en-us/azure/bot-service/bot-service-manage-analytics?view=azure-bot-service-4.0">how  to gather analytics</a>.</p>
+</section>
+</body>
+</html>
